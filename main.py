@@ -6,6 +6,7 @@ from train import train
 
 def start(task):
     process_data(label_idx[task], f'label_{task}', "data/train_all_tasks.csv")
+    # Change the model to bert-large-uncased or any other sequence classifier
     best_model_checkpoint = train(
         "distilbert-base-uncased", f'label_{task}', idx_label[task], label_idx[task])
     predict(best_model_checkpoint,
