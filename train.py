@@ -12,7 +12,8 @@ def train(model_name: str, feature_name: str, idx_label: Dict[int, str], label_i
         "train": f'preprocessed/{feature_name}_train.json', "validation": f'preprocessed/{feature_name}_valid.json'})
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    tokenized_df = df.map(preprocess_function, batched=True)
+    tokenized_df = df.map(lambda examples: tokenizer(
+        examples["text"], truncation=True), batched=True)
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     f1 = evaluate.load("f1")
@@ -21,9 +22,6 @@ def train(model_name: str, feature_name: str, idx_label: Dict[int, str], label_i
         predictions, labels = eval_pred
         predictions = np.argmax(predictions, axis=1)
         return f1.compute(predictions=predictions, references=labels, average="macro")
-
-    def preprocess_function(examples):
-        return tokenizer(examples["text"], truncation=True)
 
     model = AutoModelForSequenceClassification.from_pretrained(
         model_name, num_labels=2, id2label=idx_label, label2id=label_idx

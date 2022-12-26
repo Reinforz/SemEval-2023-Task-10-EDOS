@@ -47,6 +47,6 @@ def process_data(label_idx: Dict[str, int], feature_name: str, input_file_path: 
     (train_df, valid_df) = generate_df(
         input_file_path, feature_name, train_split)
     process_df(train_df, f'{feature_name}_train',
-               "data", label_idx, feature_name)
+               "preprocessed", label_idx, feature_name)
     process_df(valid_df, f'{feature_name}_valid',
-               "data", label_idx, feature_name)
+               "preprocessed", label_idx, feature_name)
