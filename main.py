@@ -1,6 +1,17 @@
-from config import category_label_idx, sexist_label_idx, vector_label_idx
+from config import idx_label, label_idx
+from predict import predict
 from preprocess_data import process_data
+from train import train
 
-process_data(sexist_label_idx, "label_sexist", "data/train_all_tasks.csv")
-process_data(category_label_idx, "label_category", "data/train_all_tasks.csv")
-process_data(vector_label_idx, "label_vector", "data/train_all_tasks.csv")
+
+def start(task):
+    process_data(label_idx[task], f'label_{task}', "data/train_all_tasks.csv")
+    best_model_checkpoint = train(
+        "distilbert-base-uncased", f'label_{task}', idx_label[task], label_idx[task])
+    predict(best_model_checkpoint,
+            f'data/dev_task_{task}.csv', 'task_{task}')
+
+
+# start("sexist")
+# start("category")
+# start("vector")
