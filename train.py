@@ -12,8 +12,10 @@ def train(model_name: str, feature_name: str, idx_label: Dict[int, str], label_i
         "train": f'preprocessed/{feature_name}_train.json', "validation": f'preprocessed/{feature_name}_valid.json'})
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-    tokenized_df = df.map(lambda examples: tokenizer(
-        examples["text"], truncation=True), batched=True)
+    def preprocess_function(examples):
+        return tokenizer(examples["text"], truncation=True)
+
+    tokenized_df = df.map(preprocess_function, batched=True)
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     f1 = evaluate.load("f1")
